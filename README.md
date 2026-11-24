@@ -105,6 +105,37 @@ Energy dashboard's water consumption.
 like the app does after a filter change. Only press it after you actually
 replaced the filter.
 
+## Dashboard card
+
+The integration ships its own dashboard card and loads it automatically, no
+extra resource is needed. Add it to a dashboard:
+
+```yaml
+type: custom:qc-nano-card
+```
+
+- A schematic drawing of the dispenser with the HOT / ROOM / COLD buttons:
+  the water stream and the button light up while a tap is open, the
+  snowflake pulses while the cooling unit runs, a lock shows the child lock.
+- Today's consumption, the remaining filter capacity with the next change,
+  and the cooling mode with the target temperature.
+- Warnings for a due filter change, needed cleaning or a lost connection.
+- Tap the card for the details: cooling mode, target temperature, child
+  lock, lights, energy saver, portion buttons, and every portion size per tap
+  (largest first) with − / + buttons and an enable toggle. Changes are sent
+  after you stop pressing, so a long press is a single cloud call.
+
+Options:
+
+- `device_id`: only needed when the account has more than one dispenser.
+- `title`: header text.
+- `embedded: true`: no own card frame and header, for dashboards that wrap
+  cards in their own panels.
+
+The card is keyboard and screen reader friendly (the details open as a modal
+dialog, Escape closes it) and follows the Home Assistant theme. Entity ids are
+not hard coded, so it works in any language.
+
 ## How it works
 
 - Login: AWS Cognito user pool (`USER_PASSWORD_AUTH`), the same app client

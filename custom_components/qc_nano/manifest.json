@@ -5,6 +5,10 @@
     "@zoli211"
   ],
   "config_flow": true,
+  "dependencies": [
+    "frontend",
+    "http"
+  ],
   "documentation": "https://github.com/zoli211/ha-qc-nano",
   "integration_type": "hub",
   "iot_class": "cloud_push",
@@ -13,5 +17,5 @@
     "custom_components.qc_nano"
   ],
   "requirements": [],
-  "version": "0.1.0"
+  "version": "0.2.0"
 }
