@@ -1,0 +1,40 @@
+name: Bug report
+description: Something does not work as expected.
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: What did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: input
+    id: ha_version
+    attributes:
+      label: Home Assistant version
+      placeholder: "2026.11.3"
+    validations:
+      required: true
+  - type: input
+    id: integration_version
+    attributes:
+      label: QC nano integration version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: >-
+        Download the diagnostics from the device page of the dispenser
+        (personal identifiers are redacted) and attach the file here.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Debug log
+      description: >-
+        Relevant lines with `custom_components.qc_nano: debug` logging enabled.
+        Do not paste passwords or tokens.
+      render: text

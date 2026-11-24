@@ -1,0 +1,17 @@
+{
+  "domain": "qc_nano",
+  "name": "QC nano",
+  "codeowners": [
+    "@zoli211"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/zoli211/ha-qc-nano",
+  "integration_type": "hub",
+  "iot_class": "cloud_push",
+  "issue_tracker": "https://github.com/zoli211/ha-qc-nano/issues",
+  "loggers": [
+    "custom_components.qc_nano"
+  ],
+  "requirements": [],
+  "version": "0.1.0"
+}

@@ -1,0 +1,404 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Sign in to your QC account",
+        "description": "Use the e-mail address and password of the official Q&C app. The dispenser must already be set up and connected to the cloud.",
+        "data": {
+          "username": "E-mail",
+          "password": "Password"
+        },
+        "data_description": {
+          "username": "The e-mail address of your QC account.",
+          "password": "The password of your QC account."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Sign in again",
+        "description": "The session for {username} has expired or the password changed. Enter the password again.",
+        "data": {
+          "password": "Password"
+        }
+      },
+      "reconfigure": {
+        "title": "Change QC account",
+        "data": {
+          "username": "E-mail",
+          "password": "Password"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Wrong e-mail address or password.",
+      "cannot_connect": "Could not reach the QC cloud. Check the internet connection.",
+      "unknown": "Unexpected error, see the log.",
+      "no_devices": "No dispenser is bound to this QC account. Set up the dispenser first (official app or provisioning tool), then try again."
+    },
+    "abort": {
+      "already_configured": "This QC account is already added.",
+      "reauth_successful": "Signed in again successfully.",
+      "reconfigure_successful": "The account was updated.",
+      "wrong_account": "This is a different QC account than the one configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "QC nano options",
+        "data": {
+          "scan_interval": "Cloud polling interval",
+          "live_enabled": "Live data",
+          "live_interval": "Live data request interval"
+        },
+        "data_description": {
+          "scan_interval": "How often settings, consumption and filter data are read from the cloud, in seconds.",
+          "live_enabled": "Receive temperatures, valve and unit states in real time over the cloud's MQTT channel.",
+          "live_interval": "How often the dispenser is asked to send live measurements, in seconds."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "cold_water_temperature": {
+        "name": "Cold water temperature"
+      },
+      "hot_water_temperature": {
+        "name": "Hot water temperature"
+      },
+      "board_temperature": {
+        "name": "Board temperature"
+      },
+      "water_today": {
+        "name": "Water today"
+      },
+      "cold_water_today": {
+        "name": "Cold water today"
+      },
+      "hot_water_today": {
+        "name": "Hot water today"
+      },
+      "ambient_water_today": {
+        "name": "Room temperature water today"
+      },
+      "water_total": {
+        "name": "Total water dispensed"
+      },
+      "cold_water_total": {
+        "name": "Total cold water"
+      },
+      "hot_water_total": {
+        "name": "Total hot water"
+      },
+      "ambient_water_total": {
+        "name": "Total room temperature water"
+      },
+      "cold_water_filter_period": {
+        "name": "Cold water since filter change"
+      },
+      "hot_water_filter_period": {
+        "name": "Hot water since filter change"
+      },
+      "ambient_water_filter_period": {
+        "name": "Room temperature water since filter change"
+      },
+      "filter_used": {
+        "name": "Filter used volume"
+      },
+      "filter_capacity": {
+        "name": "Filter capacity"
+      },
+      "filter_remaining": {
+        "name": "Filter remaining capacity"
+      },
+      "filter_status": {
+        "name": "Filter status",
+        "state": {
+          "good": "Good",
+          "warning": "Warning",
+          "poor": "Poor"
+        }
+      },
+      "next_filter_change": {
+        "name": "Next filter change"
+      },
+      "last_filter_change": {
+        "name": "Last filter change"
+      },
+      "filter_life": {
+        "name": "Filter lifetime"
+      },
+      "filter_months_used": {
+        "name": "Filter months used"
+      },
+      "filter_first_use": {
+        "name": "Filter first use"
+      },
+      "cleaning_status": {
+        "name": "Cleaning status",
+        "state": {
+          "good": "Good",
+          "warning": "Warning",
+          "poor": "Poor"
+        }
+      },
+      "next_cleaning": {
+        "name": "Next cleaning"
+      },
+      "last_cleaning": {
+        "name": "Last cleaning"
+      },
+      "system_health": {
+        "name": "System health",
+        "state": {
+          "good": "Good",
+          "poor": "Needs attention",
+          "bad": "Bad"
+        }
+      },
+      "hygiene_days": {
+        "name": "Hygiene counter"
+      },
+      "fan_speed": {
+        "name": "Fan speed"
+      },
+      "fan_power": {
+        "name": "Fan power"
+      },
+      "operating_hours": {
+        "name": "Operating hours"
+      },
+      "cooling_hours": {
+        "name": "Cooling unit hours"
+      },
+      "heating_hours": {
+        "name": "Heating unit hours"
+      },
+      "cold_valve_cycles": {
+        "name": "Cold water valve openings"
+      },
+      "hot_valve_cycles": {
+        "name": "Hot water valve openings"
+      },
+      "ambient_valve_cycles": {
+        "name": "Room temperature water valve openings"
+      },
+      "wifi_signal": {
+        "name": "WiFi signal"
+      },
+      "last_disconnect": {
+        "name": "Last disconnect"
+      },
+      "live_updated": {
+        "name": "Last live update"
+      },
+      "activated": {
+        "name": "Activated"
+      },
+      "registration_status": {
+        "name": "Registration status"
+      }
+    },
+    "binary_sensor": {
+      "cloud_connection": {
+        "name": "Cloud connection"
+      },
+      "live_connection": {
+        "name": "Live data connection"
+      },
+      "power": {
+        "name": "Power"
+      },
+      "cooling": {
+        "name": "Cooling"
+      },
+      "heating": {
+        "name": "Heating"
+      },
+      "cold_valve": {
+        "name": "Cold water valve"
+      },
+      "hot_valve": {
+        "name": "Hot water valve"
+      },
+      "ambient_valve": {
+        "name": "Room temperature water valve"
+      },
+      "filter_problem": {
+        "name": "Filter needs attention"
+      },
+      "cleaning_problem": {
+        "name": "Cleaning needed"
+      }
+    },
+    "switch": {
+      "child_lock": {
+        "name": "Child lock"
+      },
+      "light_off": {
+        "name": "Lights off"
+      },
+      "energy_saver": {
+        "name": "Energy saver"
+      },
+      "volume_sliders": {
+        "name": "Portion buttons"
+      },
+      "cold_tiny_enabled": {
+        "name": "Cold water tiny portion enabled"
+      },
+      "cold_small_enabled": {
+        "name": "Cold water small portion enabled"
+      },
+      "cold_normal_enabled": {
+        "name": "Cold water normal portion enabled"
+      },
+      "cold_large_enabled": {
+        "name": "Cold water large portion enabled"
+      },
+      "cold_mega_enabled": {
+        "name": "Cold water mega portion enabled"
+      },
+      "hot_tiny_enabled": {
+        "name": "Hot water tiny portion enabled"
+      },
+      "hot_small_enabled": {
+        "name": "Hot water small portion enabled"
+      },
+      "hot_normal_enabled": {
+        "name": "Hot water normal portion enabled"
+      },
+      "hot_large_enabled": {
+        "name": "Hot water large portion enabled"
+      },
+      "hot_mega_enabled": {
+        "name": "Hot water mega portion enabled"
+      },
+      "ambient_tiny_enabled": {
+        "name": "Room temperature water tiny portion enabled"
+      },
+      "ambient_small_enabled": {
+        "name": "Room temperature water small portion enabled"
+      },
+      "ambient_normal_enabled": {
+        "name": "Room temperature water normal portion enabled"
+      },
+      "ambient_large_enabled": {
+        "name": "Room temperature water large portion enabled"
+      },
+      "ambient_mega_enabled": {
+        "name": "Room temperature water mega portion enabled"
+      }
+    },
+    "number": {
+      "cold_temperature": {
+        "name": "Cold water target temperature"
+      },
+      "cold_tiny_volume": {
+        "name": "Cold water tiny portion"
+      },
+      "cold_small_volume": {
+        "name": "Cold water small portion"
+      },
+      "cold_normal_volume": {
+        "name": "Cold water normal portion"
+      },
+      "cold_large_volume": {
+        "name": "Cold water large portion"
+      },
+      "cold_mega_volume": {
+        "name": "Cold water mega portion"
+      },
+      "hot_tiny_volume": {
+        "name": "Hot water tiny portion"
+      },
+      "hot_small_volume": {
+        "name": "Hot water small portion"
+      },
+      "hot_normal_volume": {
+        "name": "Hot water normal portion"
+      },
+      "hot_large_volume": {
+        "name": "Hot water large portion"
+      },
+      "hot_mega_volume": {
+        "name": "Hot water mega portion"
+      },
+      "ambient_tiny_volume": {
+        "name": "Room temperature water tiny portion"
+      },
+      "ambient_small_volume": {
+        "name": "Room temperature water small portion"
+      },
+      "ambient_normal_volume": {
+        "name": "Room temperature water normal portion"
+      },
+      "ambient_large_volume": {
+        "name": "Room temperature water large portion"
+      },
+      "ambient_mega_volume": {
+        "name": "Room temperature water mega portion"
+      }
+    },
+    "select": {
+      "cooling_mode": {
+        "name": "Cooling mode",
+        "state": {
+          "off": "Off",
+          "standard": "Standard",
+          "boost": "Boost"
+        }
+      }
+    },
+    "text": {
+      "active_hours_mo": {
+        "name": "Active hours Monday"
+      },
+      "active_hours_tu": {
+        "name": "Active hours Tuesday"
+      },
+      "active_hours_we": {
+        "name": "Active hours Wednesday"
+      },
+      "active_hours_th": {
+        "name": "Active hours Thursday"
+      },
+      "active_hours_fr": {
+        "name": "Active hours Friday"
+      },
+      "active_hours_sa": {
+        "name": "Active hours Saturday"
+      },
+      "active_hours_su": {
+        "name": "Active hours Sunday"
+      }
+    },
+    "button": {
+      "refresh": {
+        "name": "Refresh from device"
+      },
+      "reset_filter": {
+        "name": "Confirm filter replacement"
+      },
+      "reset_cold_portions": {
+        "name": "Reset cold water portions"
+      },
+      "reset_hot_portions": {
+        "name": "Reset hot water portions"
+      },
+      "reset_ambient_portions": {
+        "name": "Reset room temperature water portions"
+      }
+    },
+    "update": {
+      "firmware": {
+        "name": "Firmware"
+      }
+    }
+  },
+  "exceptions": {
+    "invalid_hours": {
+      "message": "Invalid active hours \"{value}\". Use ranges like 6-12,14-22 (hours 0-24), or off."
+    }
+  }
+}

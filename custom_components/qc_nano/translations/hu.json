@@ -1,0 +1,404 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Bejelentkezés a QC-fiókba",
+        "description": "Az eredeti Q&C app e-mail-címét és jelszavát add meg. A készüléknek már beüzemelve és a felhőhöz csatlakoztatva kell lennie.",
+        "data": {
+          "username": "E-mail-cím",
+          "password": "Jelszó"
+        },
+        "data_description": {
+          "username": "A QC-fiókod e-mail-címe.",
+          "password": "A QC-fiókod jelszava."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Újbóli bejelentkezés",
+        "description": "A(z) {username} fiók munkamenete lejárt, vagy megváltozott a jelszó. Add meg újra a jelszót.",
+        "data": {
+          "password": "Jelszó"
+        }
+      },
+      "reconfigure": {
+        "title": "QC-fiók módosítása",
+        "data": {
+          "username": "E-mail-cím",
+          "password": "Jelszó"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Hibás e-mail-cím vagy jelszó.",
+      "cannot_connect": "Nem érhető el a QC felhő. Ellenőrizd az internetkapcsolatot.",
+      "unknown": "Váratlan hiba, részletek a naplóban.",
+      "no_devices": "Ehhez a QC-fiókhoz nincs készülék rendelve. Előbb üzemeld be a készüléket (az eredeti appal vagy beüzemelő eszközzel), utána próbáld újra."
+    },
+    "abort": {
+      "already_configured": "Ez a QC-fiók már hozzá van adva.",
+      "reauth_successful": "Az újbóli bejelentkezés sikerült.",
+      "reconfigure_successful": "A fiók adatai frissültek.",
+      "wrong_account": "Ez egy másik QC-fiók, mint a beállított."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "QC nano beállítások",
+        "data": {
+          "scan_interval": "Felhő lekérdezési gyakorisága",
+          "live_enabled": "Élő adatok",
+          "live_interval": "Élő adatok kérésének gyakorisága"
+        },
+        "data_description": {
+          "scan_interval": "Milyen gyakran olvassa a beállításokat, a fogyasztást és a szűrőadatokat a felhőből, másodpercben.",
+          "live_enabled": "Hőmérsékletek, szelepek és egységek állapota valós időben, a felhő MQTT-csatornáján.",
+          "live_interval": "Milyen gyakran kérje a készüléktől az élő méréseket, másodpercben."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "cold_water_temperature": {
+        "name": "Hidegvíz hőmérséklete"
+      },
+      "hot_water_temperature": {
+        "name": "Forró víz hőmérséklete"
+      },
+      "board_temperature": {
+        "name": "Alaplap hőmérséklete"
+      },
+      "water_today": {
+        "name": "Mai vízfogyasztás"
+      },
+      "cold_water_today": {
+        "name": "Mai hidegvíz-fogyasztás"
+      },
+      "hot_water_today": {
+        "name": "Mai forróvíz-fogyasztás"
+      },
+      "ambient_water_today": {
+        "name": "Mai szobahőmérsékletű víz"
+      },
+      "water_total": {
+        "name": "Összes kiadott víz"
+      },
+      "cold_water_total": {
+        "name": "Összes hideg víz"
+      },
+      "hot_water_total": {
+        "name": "Összes forró víz"
+      },
+      "ambient_water_total": {
+        "name": "Összes szobahőmérsékletű víz"
+      },
+      "cold_water_filter_period": {
+        "name": "Hideg víz a szűrőcsere óta"
+      },
+      "hot_water_filter_period": {
+        "name": "Forró víz a szűrőcsere óta"
+      },
+      "ambient_water_filter_period": {
+        "name": "Szobahőmérsékletű víz a szűrőcsere óta"
+      },
+      "filter_used": {
+        "name": "Szűrőn átfolyt víz"
+      },
+      "filter_capacity": {
+        "name": "Szűrő kapacitása"
+      },
+      "filter_remaining": {
+        "name": "Szűrő hátralévő kapacitása"
+      },
+      "filter_status": {
+        "name": "Szűrő állapota",
+        "state": {
+          "good": "Jó",
+          "warning": "Figyelmeztetés",
+          "poor": "Rossz"
+        }
+      },
+      "next_filter_change": {
+        "name": "Következő szűrőcsere"
+      },
+      "last_filter_change": {
+        "name": "Utolsó szűrőcsere"
+      },
+      "filter_life": {
+        "name": "Szűrő élettartama"
+      },
+      "filter_months_used": {
+        "name": "Szűrő használati ideje"
+      },
+      "filter_first_use": {
+        "name": "Szűrő első használata"
+      },
+      "cleaning_status": {
+        "name": "Tisztítási állapot",
+        "state": {
+          "good": "Jó",
+          "warning": "Figyelmeztetés",
+          "poor": "Rossz"
+        }
+      },
+      "next_cleaning": {
+        "name": "Következő tisztítás"
+      },
+      "last_cleaning": {
+        "name": "Utolsó tisztítás"
+      },
+      "system_health": {
+        "name": "Rendszerállapot",
+        "state": {
+          "good": "Jó",
+          "poor": "Figyelmet igényel",
+          "bad": "Rossz"
+        }
+      },
+      "hygiene_days": {
+        "name": "Higiéniai számláló"
+      },
+      "fan_speed": {
+        "name": "Ventilátor fordulatszáma"
+      },
+      "fan_power": {
+        "name": "Ventilátor teljesítménye"
+      },
+      "operating_hours": {
+        "name": "Üzemórák"
+      },
+      "cooling_hours": {
+        "name": "Hűtőegység üzemórái"
+      },
+      "heating_hours": {
+        "name": "Fűtőegység üzemórái"
+      },
+      "cold_valve_cycles": {
+        "name": "Hidegvíz-szelep nyitásai"
+      },
+      "hot_valve_cycles": {
+        "name": "Forróvíz-szelep nyitásai"
+      },
+      "ambient_valve_cycles": {
+        "name": "Szobahőmérsékletű-víz szelep nyitásai"
+      },
+      "wifi_signal": {
+        "name": "WiFi-jelerősség"
+      },
+      "last_disconnect": {
+        "name": "Utolsó kapcsolatvesztés"
+      },
+      "live_updated": {
+        "name": "Utolsó élő adat"
+      },
+      "activated": {
+        "name": "Aktiválás"
+      },
+      "registration_status": {
+        "name": "Regisztrációs állapot"
+      }
+    },
+    "binary_sensor": {
+      "cloud_connection": {
+        "name": "Felhőkapcsolat"
+      },
+      "live_connection": {
+        "name": "Élő adatkapcsolat"
+      },
+      "power": {
+        "name": "Bekapcsolva"
+      },
+      "cooling": {
+        "name": "Hűtés"
+      },
+      "heating": {
+        "name": "Fűtés"
+      },
+      "cold_valve": {
+        "name": "Hidegvíz-szelep"
+      },
+      "hot_valve": {
+        "name": "Forróvíz-szelep"
+      },
+      "ambient_valve": {
+        "name": "Szobahőmérsékletű-víz szelep"
+      },
+      "filter_problem": {
+        "name": "Szűrő figyelmet igényel"
+      },
+      "cleaning_problem": {
+        "name": "Tisztítás szükséges"
+      }
+    },
+    "switch": {
+      "child_lock": {
+        "name": "Gyerekzár"
+      },
+      "light_off": {
+        "name": "Fények kikapcsolása"
+      },
+      "energy_saver": {
+        "name": "Energiatakarékos mód"
+      },
+      "volume_sliders": {
+        "name": "Adaggombok"
+      },
+      "cold_tiny_enabled": {
+        "name": "Hideg víz, mini adag engedélyezve"
+      },
+      "cold_small_enabled": {
+        "name": "Hideg víz, kicsi adag engedélyezve"
+      },
+      "cold_normal_enabled": {
+        "name": "Hideg víz, normál adag engedélyezve"
+      },
+      "cold_large_enabled": {
+        "name": "Hideg víz, nagy adag engedélyezve"
+      },
+      "cold_mega_enabled": {
+        "name": "Hideg víz, mega adag engedélyezve"
+      },
+      "hot_tiny_enabled": {
+        "name": "Forró víz, mini adag engedélyezve"
+      },
+      "hot_small_enabled": {
+        "name": "Forró víz, kicsi adag engedélyezve"
+      },
+      "hot_normal_enabled": {
+        "name": "Forró víz, normál adag engedélyezve"
+      },
+      "hot_large_enabled": {
+        "name": "Forró víz, nagy adag engedélyezve"
+      },
+      "hot_mega_enabled": {
+        "name": "Forró víz, mega adag engedélyezve"
+      },
+      "ambient_tiny_enabled": {
+        "name": "Szobahőmérsékletű víz, mini adag engedélyezve"
+      },
+      "ambient_small_enabled": {
+        "name": "Szobahőmérsékletű víz, kicsi adag engedélyezve"
+      },
+      "ambient_normal_enabled": {
+        "name": "Szobahőmérsékletű víz, normál adag engedélyezve"
+      },
+      "ambient_large_enabled": {
+        "name": "Szobahőmérsékletű víz, nagy adag engedélyezve"
+      },
+      "ambient_mega_enabled": {
+        "name": "Szobahőmérsékletű víz, mega adag engedélyezve"
+      }
+    },
+    "number": {
+      "cold_temperature": {
+        "name": "Hidegvíz célhőmérséklete"
+      },
+      "cold_tiny_volume": {
+        "name": "Hideg víz, mini adag"
+      },
+      "cold_small_volume": {
+        "name": "Hideg víz, kicsi adag"
+      },
+      "cold_normal_volume": {
+        "name": "Hideg víz, normál adag"
+      },
+      "cold_large_volume": {
+        "name": "Hideg víz, nagy adag"
+      },
+      "cold_mega_volume": {
+        "name": "Hideg víz, mega adag"
+      },
+      "hot_tiny_volume": {
+        "name": "Forró víz, mini adag"
+      },
+      "hot_small_volume": {
+        "name": "Forró víz, kicsi adag"
+      },
+      "hot_normal_volume": {
+        "name": "Forró víz, normál adag"
+      },
+      "hot_large_volume": {
+        "name": "Forró víz, nagy adag"
+      },
+      "hot_mega_volume": {
+        "name": "Forró víz, mega adag"
+      },
+      "ambient_tiny_volume": {
+        "name": "Szobahőmérsékletű víz, mini adag"
+      },
+      "ambient_small_volume": {
+        "name": "Szobahőmérsékletű víz, kicsi adag"
+      },
+      "ambient_normal_volume": {
+        "name": "Szobahőmérsékletű víz, normál adag"
+      },
+      "ambient_large_volume": {
+        "name": "Szobahőmérsékletű víz, nagy adag"
+      },
+      "ambient_mega_volume": {
+        "name": "Szobahőmérsékletű víz, mega adag"
+      }
+    },
+    "select": {
+      "cooling_mode": {
+        "name": "Hűtési mód",
+        "state": {
+          "off": "Ki",
+          "standard": "Normál",
+          "boost": "Gyorshűtés"
+        }
+      }
+    },
+    "text": {
+      "active_hours_mo": {
+        "name": "Aktív órák, hétfő"
+      },
+      "active_hours_tu": {
+        "name": "Aktív órák, kedd"
+      },
+      "active_hours_we": {
+        "name": "Aktív órák, szerda"
+      },
+      "active_hours_th": {
+        "name": "Aktív órák, csütörtök"
+      },
+      "active_hours_fr": {
+        "name": "Aktív órák, péntek"
+      },
+      "active_hours_sa": {
+        "name": "Aktív órák, szombat"
+      },
+      "active_hours_su": {
+        "name": "Aktív órák, vasárnap"
+      }
+    },
+    "button": {
+      "refresh": {
+        "name": "Adatok lekérése a készüléktől"
+      },
+      "reset_filter": {
+        "name": "Szűrőcsere nyugtázása"
+      },
+      "reset_cold_portions": {
+        "name": "Hidegvíz-adagok visszaállítása"
+      },
+      "reset_hot_portions": {
+        "name": "Forróvíz-adagok visszaállítása"
+      },
+      "reset_ambient_portions": {
+        "name": "Szobahőmérsékletű adagok visszaállítása"
+      }
+    },
+    "update": {
+      "firmware": {
+        "name": "Firmware"
+      }
+    }
+  },
+  "exceptions": {
+    "invalid_hours": {
+      "message": "Érvénytelen aktív órák: „{value}”. Használj tartományokat, például 6-12,14-22 (0–24 óra), vagy azt, hogy ki."
+    }
+  }
+}
