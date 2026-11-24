@@ -38,8 +38,10 @@ PLATFORMS: list[Platform] = [
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Serve the dashboard card and load it on every dashboard."""
     integration = await async_get_integration(hass, DOMAIN)
+    # no long-term caching: browsers revalidate, so a card update from the
+    # Marketplace/HACS shows up after a page reload, without a restart
     await hass.http.async_register_static_paths(
-        [StaticPathConfig(CARD_URL, str(CARD_PATH), True)]
+        [StaticPathConfig(CARD_URL, str(CARD_PATH), False)]
     )
     # the version in the query string busts the browser cache after updates
     add_extra_js_url(hass, f"{CARD_URL}?v={integration.version}")

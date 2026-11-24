@@ -131,6 +131,8 @@ Options:
 - `title`: header text.
 - `embedded: true`: no own card frame and header, for dashboards that wrap
   cards in their own panels.
+- `compact: true`: smaller drawing and denser values, for short spaces such
+  as a wall tablet column.
 
 The card is keyboard and screen reader friendly (the details open as a modal
 dialog, Escape closes it) and follows the Home Assistant theme. Entity ids are

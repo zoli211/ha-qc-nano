@@ -7,11 +7,12 @@
  *   title: <text>     header text (default: "Water dispenser" / "Vízadagoló")
  *   embedded: true    no own card chrome and header (for dashboards that wrap
  *                     cards in their own panels)
+ *   compact: true     smaller drawing and denser values, for short spaces
  *
  * Entities are found through the integration's translation keys, so the card
  * works whatever language the entity ids were created in.
  */
-const QCN_VERSION = '0.2.0';
+const QCN_VERSION = '0.2.1';
 
 const LEVELS = ['mega', 'large', 'normal', 'small', 'tiny'];   // largest first
 const KINDS = ['hot', 'ambient', 'cold'];                       // order of the device buttons
@@ -107,6 +108,18 @@ svg.dev { width: 116px; height: auto; display: block; overflow: visible; }
 .chip.warn { background: rgba(251,191,36,.14); border-color: rgba(251,191,36,.6); color: #fde68a; }
 .chip.err { background: rgba(248,113,113,.18); border-color: rgba(248,113,113,.7); color: #fecaca; }
 .empty { color: var(--qcn-txt2); padding: 8px 0; }
+.stat .ld { display: none; }
+.compact .main { grid-template-columns: 82px minmax(0, 1fr); gap: 14px; }
+.compact svg.dev { width: 82px; }
+.compact .stats { gap: 6px; }
+.compact .stat { padding: 3px 12px 4px; border-radius: 12px; }
+.compact .stat .l { font-size: 12px; line-height: 1.3; }
+.compact .stat .v { font-size: 16.5px; line-height: 1.2; }
+.compact .stat .s { display: none; }
+.compact .stat .ld { display: inline; }
+.compact .alerts { margin-top: 5px; gap: 6px; }
+.compact .chip { min-height: 26px; padding: 0 10px; font-size: 12.5px; border-radius: 13px; }
+.compact .chip ha-icon { --mdc-icon-size: 16px; }
 
 /* device drawing */
 .cap { fill: url(#qcnSilver); }
@@ -344,8 +357,9 @@ class QcNanoCard extends HTMLElement {
     const devName = dev?.name_by_user || dev?.name || 'QC nano';
     const title = this._config.title || t.title;
     const embedded = !!this._config.embedded;
+    const cardCls = [embedded ? 'embedded' : '', this._config.compact ? 'compact' : ''].join(' ').trim();
     if (!this._deviceId) {
-      this.shadowRoot.innerHTML = `<style>${CSS}</style><ha-card class="${embedded ? 'embedded' : ''}"><div class="card"><div class="empty">${esc(t.no_device)}</div></div></ha-card>`;
+      this.shadowRoot.innerHTML = `<style>${CSS}</style><ha-card class="${cardCls}"><div class="card"><div class="empty">${esc(t.no_device)}</div></div></ha-card>`;
       this._built = true;
       return;
     }
@@ -366,14 +380,14 @@ class QcNanoCard extends HTMLElement {
       </button>`;
     this.shadowRoot.innerHTML = `
       <style>${CSS}</style>
-      <ha-card class="${embedded ? 'embedded' : ''}">
+      <ha-card class="${cardCls}">
         <div class="card">
           <div class="head"><ha-icon icon="mdi:water"></ha-icon><span>${esc(title)}</span></div>
           <div class="main" role="button" tabindex="0" aria-haspopup="dialog" aria-label="${esc(t.details)}">
             ${deviceSvg(t)}
             <div class="stats">
               <div class="stat"><div class="l">${esc(t.today)}</div><div class="v" id="vToday">—</div></div>
-              <div class="stat"><div class="l">${esc(t.filter)}</div><div class="v" id="vFilter">—</div><div class="s" id="sFilter"></div></div>
+              <div class="stat"><div class="l">${esc(t.filter)}<span class="ld" id="lFilter"></span></div><div class="v" id="vFilter">—</div><div class="s" id="sFilter"></div></div>
               <div class="stat"><div class="l">${esc(t.cooling)}</div><div class="v" id="vCool">—</div></div>
             </div>
           </div>
@@ -449,6 +463,7 @@ class QcNanoCard extends HTMLElement {
     $('vFilter').textContent = fl === null ? '—' : `${this._fmt(fl, 0)} %`;
     $('vFilter').className = 'v ' + (this._on('filter_problem') ? 'mid' : '');
     $('sFilter').textContent = `${t.change}: ${this._date('next_filter_change')}`;
+    $('lFilter').textContent = ` · ${t.change}: ${this._date('next_filter_change')}`;
     const mode = this._st('cooling_mode')?.state;
     const temp = this._num('cold_temperature');
     $('vCool').textContent = COOLING_MODES.includes(mode)
