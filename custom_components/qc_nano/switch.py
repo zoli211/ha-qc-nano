@@ -9,14 +9,25 @@ from typing import Any
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
 from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
-from .const import SLIDER_LEVELS, SLIDERS
-from .coordinator import QcNanoConfigEntry, QcNanoDevice
+from .const import DOMAIN, SLIDER_LEVELS, SLIDERS
+from .coordinator import QcNanoConfigEntry, QcNanoDevice, read_slider
 from .energy_saver import parse_schedule
 from .entity import QcNanoEntity
 
 PARALLEL_UPDATES = 1
+
+
+def _read_schedule(device: QcNanoDevice) -> str:
+    """Return the energy saver schedule exactly as read; never a default."""
+    raw = device.settings.get("energySaver")
+    if parse_schedule(raw) is None:
+        raise HomeAssistantError(
+            translation_domain=DOMAIN, translation_key="schedule_not_loaded"
+        )
+    return raw
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -26,6 +37,7 @@ class QcNanoSwitchDescription(SwitchEntityDescription):
     setting: str
     param: str
     to_param: Callable[[bool, QcNanoDevice], Any] = lambda value, device: value
+    available_fn: Callable[[QcNanoDevice], bool] = lambda device: True
 
 
 SWITCHES: tuple[QcNanoSwitchDescription, ...] = (
@@ -42,9 +54,11 @@ SWITCHES: tuple[QcNanoSwitchDescription, ...] = (
         icon="mdi:leaf",
         to_param=lambda value, device: {
             "enabled": value,
-            "settings": device.settings.get("energySaver")
-            or parse_schedule("").to_string(),
+            "settings": _read_schedule(device),
         },
+        available_fn=lambda device: (
+            parse_schedule(device.settings.get("energySaver")) is not None
+        ),
     ),
     QcNanoSwitchDescription(
         key="volume_sliders",
@@ -88,6 +102,10 @@ class QcNanoSettingSwitch(QcNanoEntity, SwitchEntity):
         self._attr_translation_key = description.key
 
     @property
+    def available(self) -> bool:
+        return super().available and self.entity_description.available_fn(self.device)
+
+    @property
     def is_on(self) -> bool | None:
         value = self.device.settings.get(self.entity_description.setting)
         return None if value is None else bool(value)
@@ -120,10 +138,13 @@ class QcNanoSliderLevelSwitch(QcNanoEntity, SwitchEntity):
         self._attr_translation_key = f"{kind}_{level}_enabled"
 
     @property
+    def available(self) -> bool:
+        return super().available and read_slider(self.device, self._kind) is not None
+
+    @property
     def is_on(self) -> bool | None:
-        slider = self.device.settings.get(SLIDERS[self._kind][0]) or {}
-        value = (slider.get(self._level) or {}).get("status")
-        return None if value is None else bool(value)
+        slider = read_slider(self.device, self._kind)
+        return None if slider is None else slider[self._level]["status"]
 
     async def async_turn_on(self, **kwargs: Any) -> None:
         await self.coordinator.async_set_slider_level(

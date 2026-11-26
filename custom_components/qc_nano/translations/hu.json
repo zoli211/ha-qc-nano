@@ -399,6 +399,12 @@
   "exceptions": {
     "invalid_hours": {
       "message": "Érvénytelen aktív órák: „{value}”. Használj tartományokat, például 6-12,14-22 (0–24 óra), vagy azt, hogy ki."
+    },
+    "slider_not_loaded": {
+      "message": "Ennek a csapnak az adagméretei még nem érkeztek meg a felhőből, ezért most nem módosíthatók. Próbáld újra a következő frissítés után."
+    },
+    "schedule_not_loaded": {
+      "message": "Az energiatakarékos ütemezés még nem érkezett meg a felhőből, ezért most nem módosítható. Próbáld újra a következő frissítés után."
     }
   }
 }

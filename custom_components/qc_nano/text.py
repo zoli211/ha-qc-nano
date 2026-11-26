@@ -5,7 +5,7 @@ from __future__ import annotations
 from homeassistant.components.text import TextEntity
 from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ServiceValidationError
+from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import DOMAIN, WEEKDAYS
@@ -47,15 +47,29 @@ class QcNanoScheduleDay(QcNanoEntity, TextEntity):
         self._attr_translation_key = f"active_hours_{day}"
 
     @property
+    def available(self) -> bool:
+        settings = self.device.settings
+        return (
+            super().available
+            and settings.get("energySaverStatus") is not None
+            and parse_schedule(settings.get("energySaver")) is not None
+        )
+
+    @property
     def native_value(self) -> str | None:
-        raw = self.device.settings.get("energySaver")
-        if raw is None:
+        schedule = parse_schedule(self.device.settings.get("energySaver"))
+        if schedule is None:
             return None
-        return parse_schedule(raw).days[self._day].to_text()
+        return schedule.days[self._day].to_text()
 
     async def async_set_value(self, value: str) -> None:
         settings = self.device.settings
         schedule = parse_schedule(settings.get("energySaver"))
+        enabled = settings.get("energySaverStatus")
+        if schedule is None or enabled is None:
+            raise HomeAssistantError(
+                translation_domain=DOMAIN, translation_key="schedule_not_loaded"
+            )
         try:
             apply_day_text(schedule, self._day, value)
         except ValueError as err:
@@ -65,9 +79,8 @@ class QcNanoScheduleDay(QcNanoEntity, TextEntity):
                 translation_placeholders={"value": value},
             ) from err
         new = schedule.to_string()
-        enabled = bool(settings.get("energySaverStatus"))
         await self.coordinator.async_update_settings(
             self._device_id,
             local={"energySaver": new},
-            energySaver={"enabled": enabled, "settings": new},
+            energySaver={"enabled": bool(enabled), "settings": new},
         )

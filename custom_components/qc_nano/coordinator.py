@@ -3,11 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, tzinfo
 import logging
 import time
 from typing import Any
-from zoneinfo import ZoneInfo
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import CALLBACK_TYPE, HomeAssistant, callback
@@ -26,6 +25,7 @@ from .const import (
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     IOT_TOPIC_PREFIX,
+    SLIDER_LEVELS,
     SLIDERS,
 )
 from .mqtt import QcNanoMqtt
@@ -101,7 +101,7 @@ class QcNanoCoordinator(DataUpdateCoordinator[dict[str, QcNanoDevice]]):
                     continue
                 current.cloud = {**summary, **cloud}
                 current.thing_name = summary.get("thingName") or current.thing_name
-                day = _local_day(cloud.get("timezone"))
+                day = _local_day(await _async_device_tz(cloud.get("timezone")))
                 try:
                     current.today = await self.api.async_get_today(device_id, day)
                 except QcNanoError as err:
@@ -258,10 +258,12 @@ class QcNanoCoordinator(DataUpdateCoordinator[dict[str, QcNanoDevice]]):
         device = self.data.get(device_id)
         if device is None:
             raise HomeAssistantError("QC nano: device is no longer available")
-        slider = {
-            k: dict(v or {}) for k, v in (device.settings.get(settings_key) or {}).items()
-        }
-        slider.setdefault(level, {}).update(changes)
+        slider = read_slider(device, kind)
+        if slider is None:
+            raise HomeAssistantError(
+                translation_domain=DOMAIN, translation_key="slider_not_loaded"
+            )
+        slider[level].update(changes)
         try:
             await self.api.async_set_slider(device_id, param, slider)
         except QcNanoError as err:
@@ -296,9 +298,35 @@ class QcNanoCoordinator(DataUpdateCoordinator[dict[str, QcNanoDevice]]):
         self._schedule_delayed_refresh(3)
 
 
-def _local_day(timezone: str | None) -> str:
-    try:
-        tz = ZoneInfo(timezone) if timezone else dt_util.get_default_time_zone()
-    except (KeyError, ValueError):
-        tz = dt_util.get_default_time_zone()
+def read_slider(device: QcNanoDevice, kind: str) -> dict[str, dict[str, Any]] | None:
+    """Return a copy of a quantity slider, or None unless all levels were read.
+
+    The cloud only accepts a full slider (all five levels), so a level that
+    was not read must never be filled in with a made-up value.
+    """
+    raw = device.settings.get(SLIDERS[kind][0])
+    if not isinstance(raw, dict):
+        return None
+    slider: dict[str, dict[str, Any]] = {}
+    for level in SLIDER_LEVELS:
+        entry = raw.get(level)
+        if not isinstance(entry, dict):
+            return None
+        value, status = entry.get("value"), entry.get("status")
+        if not isinstance(value, (int, float)) or isinstance(value, bool):
+            return None
+        if not isinstance(status, bool):
+            return None
+        slider[level] = {"value": int(value), "status": status}
+    return slider
+
+
+async def _async_device_tz(name: str | None) -> tzinfo:
+    """Resolve the device's time zone without blocking the event loop."""
+    if name and (tz := await dt_util.async_get_time_zone(name)) is not None:
+        return tz
+    return dt_util.get_default_time_zone()
+
+
+def _local_day(tz: tzinfo) -> str:
     return datetime.now(tz).strftime("%Y-%m-%d")

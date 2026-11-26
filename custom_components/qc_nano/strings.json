@@ -399,6 +399,12 @@
   "exceptions": {
     "invalid_hours": {
       "message": "Invalid active hours \"{value}\". Use ranges like 6-12,14-22 (hours 0-24), or off."
+    },
+    "slider_not_loaded": {
+      "message": "The current portion sizes of this tap have not been read from the cloud yet, so they cannot be changed. Try again after the next update."
+    },
+    "schedule_not_loaded": {
+      "message": "The current energy saver schedule has not been read from the cloud yet, so it cannot be changed. Try again after the next update."
     }
   }
 }

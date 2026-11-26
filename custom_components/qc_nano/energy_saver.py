@@ -7,7 +7,7 @@ hour ranges.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 import re
 
 from .const import WEEKDAYS
@@ -20,8 +20,8 @@ OFF_WORDS = {"", "off", "ki", "-", "none"}
 class DaySchedule:
     """One day of the schedule."""
 
-    enabled: bool = True
-    ranges: list[tuple[int, int]] = field(default_factory=lambda: [(0, 24)])
+    enabled: bool
+    ranges: list[tuple[int, int]]
 
     def to_text(self) -> str:
         if not self.enabled:
@@ -58,18 +58,26 @@ def parse_ranges(text: str) -> list[tuple[int, int]]:
     return ranges
 
 
-def parse_schedule(value: str | None) -> Schedule:
-    """Parse the cloud string; unknown or missing days default to 0-24."""
-    days = {day: DaySchedule() for day in WEEKDAYS}
+def parse_schedule(value: str | None) -> Schedule | None:
+    """Parse the cloud string; return None unless all seven days are valid.
+
+    The schedule is always written back as a whole week, so a missing or
+    malformed day must not be replaced by a made-up default.
+    """
+    days: dict[str, DaySchedule] = {}
     for chunk in (value or "").split(";"):
-        parts = chunk.strip().split(":")
-        if len(parts) != 3 or parts[0] not in days:
+        if not chunk.strip():
             continue
+        parts = chunk.strip().split(":")
+        if len(parts) != 3 or parts[0] not in WEEKDAYS or parts[1] not in ("0", "1"):
+            return None
         try:
             ranges = [] if parts[2] in ("", "0-0") else parse_ranges(parts[2])
         except ValueError:
-            ranges = []
+            return None
         days[parts[0]] = DaySchedule(enabled=parts[1] == "1", ranges=ranges)
+    if set(days) != set(WEEKDAYS):
+        return None
     return Schedule(days)
 
 

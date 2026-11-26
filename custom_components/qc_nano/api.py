@@ -396,10 +396,18 @@ class QcNanoApi:
         self, device_id: str, param: str, slider: dict[str, dict[str, Any]]
     ) -> None:
         """Write a full quantity slider (all five levels) as AWSJSON."""
+        missing = [
+            level
+            for level in SLIDER_LEVELS
+            if (slider.get(level) or {}).get("value") is None
+            or (slider.get(level) or {}).get("status") is None
+        ]
+        if missing:
+            raise QcNanoError(f"Incomplete slider, missing: {', '.join(missing)}")
         value = {
             level: {
-                "value": int((slider.get(level) or {}).get("value") or 0),
-                "status": bool((slider.get(level) or {}).get("status")),
+                "value": int(slider[level]["value"]),
+                "status": bool(slider[level]["status"]),
             }
             for level in SLIDER_LEVELS
         }

@@ -8,7 +8,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import COLD_TEMP_MAX, COLD_TEMP_MIN, SLIDER_LEVELS, SLIDERS
-from .coordinator import QcNanoConfigEntry
+from .coordinator import QcNanoConfigEntry, read_slider
 from .entity import QcNanoEntity
 
 PARALLEL_UPDATES = 1
@@ -80,9 +80,13 @@ class QcNanoPortion(QcNanoEntity, NumberEntity):
         self._attr_translation_key = f"{kind}_{level}_volume"
 
     @property
+    def available(self) -> bool:
+        return super().available and read_slider(self.device, self._kind) is not None
+
+    @property
     def native_value(self) -> float | None:
-        slider = self.device.settings.get(SLIDERS[self._kind][0]) or {}
-        return (slider.get(self._level) or {}).get("value")
+        slider = read_slider(self.device, self._kind)
+        return None if slider is None else slider[self._level]["value"]
 
     async def async_set_native_value(self, value: float) -> None:
         await self.coordinator.async_set_slider_level(
